@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Finland Population Statistics</title>
+  <title>Finland Population and Real Estate Statistics</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,14 +60,22 @@
   <div class="container">
     <h1>Finland Population Data</h1>
     <p class="description">Select an indicator and year to visualize demographic trends across Finnish regions.</p>
-
-    <div id="vis"></div>
+    <div id="populationVis"></div>
+  </div>
+  <div class="container">
+    <h1>Finland Real Estate Data</h1>
+    <p class="description">An overview of real estate price changes in the between 2015 and 2024</p>
+    <div id="realEstateVis"></div>
   </div>
 
   <script>
-    // Embed with some extra options for a cleaner look
-    const spec = "chart/finland_maps.json";
-    vegaEmbed('#vis', spec, {
+    const populationSpec = "chart/finland_population.json";
+    vegaEmbed('#populationVis', populationSpec, {
+      actions: false,
+      theme: 'pure'
+    }).catch(console.error);
+    const realEstateSpec = "chart/finland_real_estate.json";
+    vegaEmbed('#realEstateVis', realEstateSpec, {
       actions: false,
       theme: 'pure'
     }).catch(console.error);

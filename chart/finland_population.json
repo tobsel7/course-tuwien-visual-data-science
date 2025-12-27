@@ -1,0 +1,112 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "padding": {"bottom": 20},
+  "config": {
+    "font": "Inter",
+    "view": {"stroke": null},
+    "title": {"fontSize": 14, "fontWeight": 600, "anchor": "start", "offset": 10}
+  },
+  "params": [
+    {
+      "name": "selectYear",
+      "value": 2023,
+      "bind": {"input": "range", "min": 1990, "max": 2023, "step": 1, "name": "Year: "}
+    },
+    {
+      "name": "selectVar",
+      "value": "Population 31 Dec",
+      "bind": {
+        "input": "select",
+        "options": [
+          "Population 31 Dec",
+          "Finnish speakers",
+          "Sami speakers",
+          "Swedish speakers",
+          "Foreign-language speakers",
+          "Average age, both sexes",
+          "Citizens of foreign countries",
+          "Demographic dependency ratio",
+          "Economic dependency ratio",
+          "Persons born abroad",
+          "Persons with foreign background",
+          "Share of persons aged 15 to 64, %",
+          "Share of persons aged 65 or over, %",
+          "Share of persons aged under 15, %"
+        ],
+        "name": "Indicator: "
+      }
+    }
+  ],
+  "hconcat": [
+    {
+      "title": "Regional Map",
+      "width": 200,
+      "height": 350,
+      "data": {"url": "data/preprocessed/population_fin_region.csv"},
+      "transform": [
+        {"filter": "datum.Year == selectYear"},
+        {"calculate": "datum[selectVar]", "as": "selected_value"},
+        {
+          "lookup": "Region",
+          "from": {
+            "data": {
+              "url": "data/preprocessed/map_fin_region.json",
+              "format": {"type": "topojson", "feature": "data"}
+            },
+            "key": "properties.name"
+          },
+          "as": "geo"
+        }
+      ],
+      "projection": {"type": "identity", "reflectY": true},
+      "mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.5},
+      "encoding": {
+        "shape": {"field": "geo", "type": "geojson"},
+        "color": {
+          "field": "selected_value",
+          "type": "quantitative",
+          "scale": {"scheme": "blues"},
+          "legend": {"title": null, "orient": "bottom", "gradientLength": 180}
+        },
+        "tooltip": [
+          {"field": "Region", "type": "nominal"},
+          {"field": "selected_value", "type": "quantitative", "title": "Value", "format": ",.0f"}
+        ]
+      }
+    },
+    {
+      "title": "Province Trends",
+      "width": 220,
+      "height": 350,
+      "data": {"url": "data/preprocessed/population_fin_province.csv"},
+      "transform": [{"calculate": "datum[selectVar]", "as": "selected_value"}],
+      "layer": [
+        {
+          "mark": {"type": "line", "point": {"size": 30}},
+          "encoding": {
+            "x": {"field": "Year", "type": "quantitative", "axis": {"format": "d", "tickCount": 5}},
+            "y": {"field": "selected_value", "type": "quantitative", "title": null},
+            "color": {
+              "field": "Province",
+              "type": "nominal",
+              "scale": {
+                "domain": ["Southern Finland", "Western Finland", "Northern Finland", "Eastern Finland"],
+                "range": ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
+              },
+              "legend": {"orient": "bottom", "title": null, "columns": 2}
+            },
+            "tooltip": [
+              {"field": "Province", "type": "nominal"},
+              {"field": "Year", "type": "quantitative"},
+              {"field": "selected_value", "type": "quantitative", "format": ",.0f"}
+            ]
+          }
+        },
+        {
+          "mark": {"type": "rule", "color": "#e74c3c", "strokeDash": [4, 4]},
+          "encoding": {"x": {"datum": {"expr": "selectYear"}, "type": "quantitative"}}
+        }
+      ]
+    }
+  ]
+}
