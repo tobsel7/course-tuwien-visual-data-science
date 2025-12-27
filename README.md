@@ -1,7 +1,7 @@
 # course-tuwien-visual-data-science
 Visualization project exploring real estate price and population dynamics in Finland.
 
-An interactive chart for [Finnish Population Data](https://tobsel7.github.io/course-tuwien-visual-data-science) was
+An interactive chart for [Finnish population data](https://tobsel7.github.io/course-tuwien-visual-data-science) was
 created using Vega-Lite.
 
 Some analytic plots are available in the [Jupyter notebooks](notebook).
